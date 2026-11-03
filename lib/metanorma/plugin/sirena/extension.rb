@@ -2,8 +2,10 @@
 
 require "asciidoctor"
 require "digest"
+
 require_relative "block_processor"
 require_relative "plantuml_block_processor"
+require_relative "plantuml_override_preprocessor"
 
 module Metanorma
   module Plugin
@@ -14,6 +16,7 @@ module Metanorma
         ::Asciidoctor::Extensions.register do
           block ::Metanorma::Plugin::Sirena::BlockProcessor
           block ::Metanorma::Plugin::Sirena::PlantumlBlockProcessor
+          preprocessor ::Metanorma::Plugin::Sirena::PlantumlOverridePreprocessor
         end
       end
     end

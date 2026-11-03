@@ -34,6 +34,18 @@ RSpec.describe Metanorma::Plugin::Sirena::PlantumlBlockProcessor do
     end
   end
 
+  describe "relative docfile (as metanorma passes it)" do
+    it "renders under the working directory instead of aborting" do
+      Dir.chdir(dir) do
+        html = convert_adoc(plantuml_block(fixture("simple.puml")),
+                            "docfile" => "doc.adoc", "imagesdir" => "images")
+        expect(html).to include("<img")
+        expect(Dir.glob(File.join(dir, "_plantuml_images", "*.svg")).size)
+          .to eq(1)
+      end
+    end
+  end
+
   describe "rendering" do
     it "writes an SVG under _plantuml_images and emits an image" do
       html = convert(fixture("simple.puml"))
