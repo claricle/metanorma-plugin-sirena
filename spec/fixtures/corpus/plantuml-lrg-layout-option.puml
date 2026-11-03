@@ -1,0 +1,11 @@
+@startuml
+hide circle
+hide empty members
+
+class Values {
+    Val1 : integer
+    Val2 : integer
+}
+
+Frame [key: string] *-- "1" Values
+@enduml
