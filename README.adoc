@@ -1,0 +1,25 @@
+= metanorma-plugin-sirena
+
+Metanorma AsciiDoc extension that renders diagram blocks through https://github.com/claricle/sirena[Sirena], the pure-Ruby diagram interpreter — no Java, no external renderer, no server.
+
+== Purpose
+
+Replaces the metanorma-plugin-plantuml pipeline (PlantUML JAR / server) with Sirena: the same `[plantuml]`-style authoring experience, rendered in-process by an owned engine.
+
+== Status
+
+Scaffold. The `sirena` block processor is registered; the `[plantuml]` drop-in handler and the Sirena PlantUML language support it needs are tracked in claricle/sirena. Test corpus: mn-samples-pdfa `sources/bpg-tagged-pdf-syntax` (real `[plantuml]`/`@startsalt` documents).
+
+== Usage
+
+[sourcer]
+----
+[sirena]
+....
+<diagram source>
+....
+----
+
+== License
+
+BSD-2-Clause.
