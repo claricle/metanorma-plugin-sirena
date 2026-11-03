@@ -1,0 +1,8 @@
+@startsalt my diagram
+{
+    {T!
+        + <b>Table</b> | . | .
+        ++ <b>TR</b> | table row | .
+    }
+}
+@endsalt

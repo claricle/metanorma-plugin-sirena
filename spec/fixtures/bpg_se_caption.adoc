@@ -1,0 +1,147 @@
+[[SE_Caption]]
+==== `<Caption>`
+
+In PDF 1.7 `<Caption>` is described as follows:
+
+* A brief portion of text describing a table or figure.
+* A `<L>` may contain a `<Caption>` as its first element (prior to the actual `<LI>` items).
+* A `<Table>` may include a `<Caption>` as its first or last child element.
+* A `<TOC>`. See <<SE_List,`<L>`>>.
+
+Where not otherwise defined for uses other than `<Table>`, `<L>` and `<TOC>`, it is recommended that `<Caption>` structure elements be contained within a parent structure element that also contains the content being captioned. A caption is expected to occur directly above or below the item it captions. For <<SE_Figure,`<Figure>`>> structure elements, for which current-generation AT does not expect child structure elements, `<Caption>` elements are expected to occur immediately before or after as siblings of the captioned element (see <<CaptionExampleA>>).
+
+For elements that allow the explicit inclusion of a `<Caption>` as a child element (e.g. <<SE_Table,`<Table>`>>), the `<Caption>` must be the first or last direct child (see <<CaptionExampleC>>).
+
+===== Examples
+
+[[CaptionExampleA]]
+.`<Caption>` including substructure, i.e. a single caption including two paragraphs
+[example]
+====
+
+.`<Caption>` including substructure, i.e. a single caption including two paragraphs
+[source,taggedpdf]
+----
+<Figure>
+<Caption> {
+   <P>
+   <P>
+}
+----
+
+.`<Caption>` including substructure, i.e. a single caption including two paragraphs
+[plantuml]
+....
+@startsalt
+{
+    {T!
+        + <b>Figure</b> | . | .
+        + <b>Caption</b> | . | .
+        ++ <b>P</b> | paragraph | .
+        ++ <b>P</b> | paragraph | .
+    }
+}
+@endsalt
+....
+
+====
+
+<<CaptionExampleB>> and <<CaptionExampleC>> are both equally valid; the choice between them is typically made on the basis of visual presentation order in the PDF, or on the basis of reuse considerations.
+
+NOTE: In practice, most implementations accept direct content within a `<Caption>`.
+
+
+
+[[CaptionExampleB]]
+.`<Caption>` for a table where the `<Caption>` occurs logically prior to the table itself
+[source,taggedpdf]
+----
+<Table> {
+   <Caption> [substructure, e.g. <P>]
+   <TR>
+   <TR>
+}
+----
+
+.`<Caption>` for a table where the `<Caption>` occurs logically prior to the table itself
+[plantuml]
+....
+@startsalt
+{
+    {T!
+        + <b>Table</b> | . | .
+        ++ <b>Caption</b> | . | substructure, e.g. <P>
+        ++ <b>TR</b> | table row | .
+        +++ ... | cells in first row of table | .
+        ++ <b>TR</b> | table row | .
+        +++ ... | cells in next row of table | .
+        ++ ... | . | .
+    }
+}
+@endsalt
+....
+
+
+[[CaptionExampleC]]
+.`<Caption>` for a table where the `<Caption>` occurs logically following the table itself
+[source,taggedpdf]
+----
+<Table> {
+   <TR>
+   <TR>
+   <Caption> [substructure, e.g. <P>]
+}
+----
+
+.`<Caption>` for a table where the `<Caption>` occurs logically following the table itself
+[plantuml]
+....
+@startsalt
+{
+    {T!
+        + <b>Table</b> | . | .
+        ++ <b>TR</b> | table row | .
+        ++ <b>TR</b> | table row | .
+        ++ <b>Caption</b> | . | substructure, e.g. <P>
+    }
+}
+@endsalt
+....
+
+
+[[CaptionExampleD]]
+.`<Caption>` for a list
+[source,taggedpdf]
+----
+<L> {
+   <Caption> [substructure, e.g. <P>]
+   <LI>
+   <LI>
+}
+----
+
+.`<Caption>` for a list
+[plantuml]
+....
+@startsalt
+{
+    {T!
+        + <b>L</b> | list | .
+        ++ <b>Caption</b> | . | substructure, e.g. <P>
+        ++ <b>LI</b> | list item | .
+        ++ <b>LI</b> | list item | .
+    }
+}
+@endsalt
+....
+
+
+===== Creation 
+
+In PDF 1.7 `<Caption>` is only intended for use with <<SE_Figure,`<Figure>`>>, <<SE_Table,`<Table>`>>, <<SE_List,`<L> (list)`>> and structure element types in <<ISO_32000_1, clause="14.8.4.2, Grouping Elements">>.
+
+===== Consumption
+
+Processors encountering a `<Caption>` immediately preceding or following a <<SE_Figure,`<Figure>`>>, <<SE_List,`<L> (list)`>>, <<SE_Table,`<Table>`>>, or <<SE_Formula,`<Formula>`>> structure element are recommended to assume that the `<Caption>` refers to that structure element, i.e. as if the `<Caption>` structure element were inside that <<SE_Figure,`<Figure>`>>, <<SE_List,`<L> (list)`>>, <<SE_Table,`<Table>`>>, or <<SE_Formula,`<Formula>`>> structure element.
+
+Processors are recommended to be prepared to encounter `<Caption>` elements associated with <<SE_Formula,`<Formula>`>> and <<SE_TOC_TOCI,`<TOC>`>> structure element types.

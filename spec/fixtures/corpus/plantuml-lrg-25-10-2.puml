@@ -1,0 +1,8 @@
+@startuml
+!include components.puml!FRONTEND
+!include components.puml!BACKEND
+
+WebApp --> APIGateway
+MobileApp --> APIGateway
+APIGateway --> DB
+@enduml
