@@ -14,9 +14,12 @@ RSpec.describe Metanorma::Plugin::Sirena::PlantumlBlockProcessor,
 
   corpus_dir = File.expand_path("fixtures/corpus", __dir__)
   rendered = %w[
-    plantuml-lrg-1-12-simple plantuml-lrg-1-12 plantuml-lrg-14-1
-    plantuml-lrg-14-8-2 plantuml-lrg-3-27 plantuml-lrg-3-5 plantuml-lrg-3-6
-    plantuml-lrg-layout-option
+    components plantuml-lrg-1-12-simple plantuml-lrg-1-12 plantuml-lrg-1-15 plantuml-lrg-1-19
+    plantuml-lrg-14-1 plantuml-lrg-14-8-2 plantuml-lrg-19-0-1 plantuml-lrg-2-8 plantuml-lrg-2-9
+    plantuml-lrg-3-27 plantuml-lrg-3-5 plantuml-lrg-3-6 plantuml-lrg-5-12 plantuml-lrg-5-4
+    plantuml-lrg-6-10-4 plantuml-lrg-6-15 plantuml-lrg-6-19 plantuml-lrg-6-3 plantuml-lrg-6-4
+    plantuml-lrg-7-18-4 plantuml-lrg-7-4-3 plantuml-lrg-7-5 plantuml-lrg-8-4-4 plantuml-lrg-8-9-1
+    plantuml-lrg-9-15 plantuml-lrg-layout-option
   ]
 
   let(:dir) { Dir.mktmpdir("plantuml-corpus") }
