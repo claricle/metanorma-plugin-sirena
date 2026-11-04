@@ -42,11 +42,19 @@ RSpec.describe Metanorma::Plugin::Sirena::PlantumlBlockProcessor,
     "plantuml-lrg-25-11" => "stuff2",
     "subpart" => "stuff4",
     # Activity `kill`.
-    "plantuml-lrg-6-5" => "condition?"
+    "plantuml-lrg-6-5" => "condition?",
+    # Class and state diagrams, rendered by Sirena's PlantUML class and
+    # state families (sirena#353).
+    "plantuml-lrg-3-8" => "+getName()",
+    "plantuml-lrg-3-10" => "On last defined class",
+    "plantuml-lrg-3-11-3" => "+void start(int timeoutms)",
+    "plantuml-lrg-3-13" => "ArrayList",
+    "plantuml-lrg-3-35-4" => "[blue,plain,16]",
+    "plantuml-lrg-9-3-1" => "NewValuePreview",
+    "plantuml-lrg-9-5" => "Accumulate Enough Data"
   }.freeze
 
   object = "object diagram (object/map), not a Sirena PlantUML family"
-  klass = "class-diagram syntax beyond Sirena's PlantUML class subset"
   other = "PlantUML language Sirena does not implement"
   not_applicable = {
     "plantuml-lrg-1-12-invalid" => "deliberately missing @enduml: the " \
@@ -82,12 +90,7 @@ RSpec.describe Metanorma::Plugin::Sirena::PlantumlBlockProcessor,
     "plantuml-lrg-4-2" => object, "plantuml-lrg-4-6-3" => object,
     "plantuml-lrg-4-6-5" => object, "plantuml-lrg-4-7" => object,
     "plantuml-lrg-4-8" => object,
-    "plantuml-lrg-9-3-1" => "#{other} (state)",
-    "plantuml-lrg-9-5" => "#{other} (state)",
-    "plantuml-lrg-20-3" => "entity-relationship (entity) diagram",
-    "plantuml-lrg-3-8" => klass, "plantuml-lrg-3-10" => klass,
-    "plantuml-lrg-3-11-3" => klass, "plantuml-lrg-3-13" => klass,
-    "plantuml-lrg-3-35-4" => klass
+    "plantuml-lrg-20-3" => "entity-relationship (entity) diagram"
   }.freeze
 
   let(:dir) { Dir.mktmpdir("plantuml-corpus") }
