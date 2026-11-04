@@ -131,9 +131,8 @@ module Metanorma
 
         def localdir(document)
           attrs = document.attributes
-          return ::File.dirname(attrs["docfile"]) if attrs["docfile"]
-
-          attrs["docdir"] || attrs["localdir"] || "."
+          dir = attrs["docfile"] && ::File.dirname(attrs["docfile"])
+          ::File.expand_path(dir || attrs["docdir"] || attrs["localdir"] || ".")
         end
 
         def imagesdir(document, localdir)
