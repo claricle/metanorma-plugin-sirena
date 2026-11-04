@@ -1,0 +1,98 @@
+= Render parity review: Sirena vs the PlantUML JAR
+:toc:
+
+Refs claricle/metanorma-plugin-sirena#1, acceptance 2 (render parity reviewed
+against the PlantUML JAR for the corpus; semantic/visual, not byte parity).
+
+== Method (measured 2026-11-04)
+
+* Reference: PlantUML 1.2026.9 (`plantuml.jar -tsvg -p`, include path set to
+  `spec/fixtures/corpus` and `includes/`). All 73 fixtures render in the JAR
+  without a syntax error.
+* Sirena: commit `fca111132` (sirena PR #353, `feat/plantuml-class-state`,
+  which contains activity/usecase/component from main `9b1e64ae8`), plugin
+  corpus from PR #4 (`feat/corpus-coverage`), includes expanded by the plugin's
+  `PlantumlPreprocessor`, `Sirena.render(source)` with notation auto-detect.
+  (Forcing `notation: :plantuml` breaks `@startsalt`; do not.)
+* Both SVGs rasterised with `rsvg-convert` and compared side by side (JAR
+  left, Sirena right), plus a text-token diff of the `<text>` content.
+  Rasters are not committed.
+* Not covered by this run: sirena PR #352 (activity `kill`, fixture 6-5).
+
+== Counts
+
+73 fixtures: 39 render through Sirena (main alone: 33). Of the 39:
+16 match (same elements and labels, only styling/geometry differ),
+19 partial, 4 gap. 34 do not render (listing fallback).
+With PR #352, 6-5 renders (not measured here).
+
+== Rendered fixtures
+
+Styling that differs everywhere and is not repeated per row: Sirena uses
+heavier strokes, white participant boxes with black borders, monospace class
+members, `<<stereotype>>` text instead of the C/I/E/A badges, `+`/`-`
+visibility characters instead of icons, 1.2-2x larger canvases.
+
+[cols="2,^1,^1,4,^1",options="header"]
+|===
+| Fixture | Renders | Labels match | Notable differences | Gap
+
+| components | Y | Y | component icon placement only (first of two sub-diagrams, as the JAR) | none
+| 1-12-simple, 1-12, 1-15 (sequence) | Y | Y | stroke weight, note position slightly wider | none
+| 1-19 (sequence) | Y | partial | creole not applied: `**bold**`, `//italics//`, `--stroked--`, `<color>`, `<back>`, `<size>` shown literally in notes and messages. `<img>` not comparable (JAR also fails: file missing) | medium
+| 25-10-1, -include, -include-a, 25-10-2 | Y | Y | includes expanded identically | none
+| 25-11, subpart (sequence) | Y | partial | self-message label overlaps the lifeline | low
+| 2-8 (usecase) | Y | partial | all text present; notes placed apart from their targets, crossing edges, no note connectors to several objects as in the JAR | low
+| 2-9 (usecase) | Y | Y | stereotype printed beside, not above, the actor | none
+| 19-0-1 (math) | Y | partial | `<math>..</math>` left as literal text; the JAR renders the formula | medium
+| 3-5, 3-8 (class) | Y | Y | member groups and separators present | none
+| 3-6 (class) | Y | partial | the last member (`+method2()`) overflows the bottom of the box; no separator between fields and methods | medium (defect)
+| layout-option (class) | Y | partial | `Values` box height too small, `Val2` clipped by the canvas; `key: string` clipped at the left edge | high (defect)
+| 3-10 (class) | Y | partial | notes present; the `<img>` note is not comparable (JAR fails on the missing file) | low
+| 3-11-3 (class) | Y | partial | member-anchored notes attach to the class, not to the member | low
+| 3-13 (class) | Y | partial | all names and members present; enum/annotation/interface/abstract shown as `<<..>>` text; layout loose | low
+| 3-27 (class) | Y | partial | association class: no junction dot, line gap instead | low
+| 3-35-4 (class) | Y | partial | text and labels match; bracketed edge styles (`[#red,dashed,thickness=4]`) ignored: all edges black solid | medium
+| 5-4, 6-3, 6-19 (activity) | Y | Y | 6-3 loses `__underline__`; JAR shows deprecation notes on 6-19 that Sirena does not | none
+| 5-12 (activity) | Y | partial | long back-edges, fork labels (`BEFORE_DESTROY`) shown which the JAR omits | low
+| 6-10-4 (activity) | Y | partial | `yes` and `monoproc` labels overprint at the same position | medium
+| 6-15 (activity) | Y | partial | multi-line arrow note overlaps a connector; bold lost | low
+| 6-4 (activity) | Y | partial | five branch labels stack at one point; only A and B readable | medium
+| 7-4-3 (component) | Y | partial | the `Web Service only` note is anchored to the component, not the interface | low
+| 7-18-4 (component) | Y | partial | ports and edges present; routing differs | low
+| 7-5 (component) | Y | partial | `cloud`, `database`, `folder`, `frame` containers all drawn as plain rectangles | medium
+| 8-4-4 (component) | Y | partial | all edges styled and coloured; their labels overprint | medium
+| 8-9-1 (component) | Y | Y | cloud as ellipse; vertical, not horizontal, flow | none
+| 9-3-1, 9-5 (state) | Y | partial | composite states laid out degenerate: canvas 1831 x 412 (JAR 350 x 292) with tiny content, transitions between composites collapse onto one line, labels stack | high
+| 14-1 (salt) | Y | Y | radio/checkbox glyph styles | none
+| 14-8-2 (salt) | Y | partial | `..` and `== with T!` separators shown as text; `T#` table mis-structured | low
+|===
+
+== Regression to note
+
+* 9-15 (`[*] --> Active` with `note left of`): Sirena main renders it as a
+  *component* diagram (wrong: `*` is a component, states are circles). Under
+  PR #353 the same source is routed to the state family and fails with
+  "state statement note is not yet supported", so the block falls back to a
+  listing. The JAR draws a state diagram with two notes.
+
+== Not rendered (34): reason
+
+* Other PlantUML families, "not yet supported" or undetected: json 11-1/2/3, 2-18; yaml
+  12-3-1/2, 12-6; nwdiag 13-1-2, 13-4-1; timing 10-1-2, 10-16, 10-7-2; gantt
+  16-1-1; mindmap 17-2/3/4/6-3; wbs 18-1, 18-7; ebnf custom-filename.
+* Object/map diagrams 4-2, 4-6-3, 4-6-5, 4-8; `@startuml PERT` 4-7; entity 20-3
+  (`skinparam linetype`).
+* Needs bundled library/assets: 27-3 (`awslib`), 15-2 (archimate sprites), 5-7 (`<img>`).
+* `<style>` blocks: 6-25-2.
+* Activity `kill` 6-5 (PR #352); state note 9-15 (above).
+* By design: 1-12-invalid (missing `@enduml`), `sequences` (library of two diagrams).
+
+== Top gaps to fix (by severity)
+
+. State composite layout (9-3-1, 9-5): unreadable output; plus 9-15 regression.
+. Class box height with members (3-6, layout-option): content clipped by the box and canvas.
+. Edge-label collisions on fan-out edges (6-10-4, 6-4, 8-4-4).
+. Creole / `<math>` inline markup not applied (1-19, 19-0-1, 6-3).
+. Bracketed edge styles on class diagrams (3-35-4) and component containers
+  shapes (7-5).
