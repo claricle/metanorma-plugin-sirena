@@ -4,6 +4,7 @@ require "fileutils"
 require "pathname"
 require "sirena"
 require "sirena/notation/plantuml"
+require_relative "plantuml_preprocessor"
 
 module Metanorma
   module Plugin
@@ -35,7 +36,7 @@ module Metanorma
 
           formats = parse_formats(attrs, parent.document)
           image_block(parent, attrs, formats.map do |format|
-            generate_file(parent, source, format)
+            generate_file(parent, source, format, attrs)
           end, formats)
         rescue StandardError => e
           abort(parent, source, attrs, e.message)
@@ -67,15 +68,30 @@ module Metanorma
           format.to_s.strip.downcase
         end
 
-        def generate_file(parent, source, format)
+        def generate_file(parent, source, format, attrs)
           raise "Sirena renders SVG only; format '#{format}' is unsupported" unless RENDERABLE_FORMATS.include?(format)
 
           validate_source(source)
-          svg = ::Sirena.render(source)
+          svg = ::Sirena.render(preprocess(source, parent.document, attrs))
           localdir, relative = output_dirs(parent.document)
           filename = "#{base_name(source)}.#{format}"
           ::File.write(::File.join(localdir, IMAGES_SUBDIR, filename), svg)
           ::File.join(relative, filename)
+        end
+
+        def preprocess(source, document, attrs)
+          dirs = [localdir(document), *include_dirs(document, attrs)]
+          PlantumlPreprocessor.new(dirs).expand(source)
+        end
+
+        # `includedirs` (block) and `plantuml-includedirs` (document) are
+        # semicolon-separated and relative to the document directory.
+        def include_dirs(document, attrs)
+          base = localdir(document)
+          [document.attr("plantuml-includedirs"), attrs["includedirs"]]
+            .compact.flat_map { |list| list.split(";") }
+            .map(&:strip).reject(&:empty?)
+            .map { |dir| ::File.expand_path(dir, base) }
         end
 
         def validate_source(source)
