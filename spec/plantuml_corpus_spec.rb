@@ -61,11 +61,30 @@ RSpec.describe Metanorma::Plugin::Sirena::PlantumlBlockProcessor,
     "plantuml-lrg-10-1-2" => "Clock_0",
     "plantuml-lrg-10-16" => "Web Browser",
     "plantuml-lrg-10-7-2" => "Season",
-    "plantuml-lrg-20-3" => "card_id : number"
+    "plantuml-lrg-20-3" => "card_id : number",
+    # Json, yaml, mindmap, WBS, gantt and object/map diagrams, rendered by
+    # Sirena since the pinned revision (see Gemfile).
+    "plantuml-lrg-11-1" => "212 555-1234",
+    "plantuml-lrg-11-2" => "postalCode",
+    "plantuml-lrg-11-3" => "646 555-4567",
+    "plantuml-lrg-2-18" => "Usecase",
+    "plantuml-lrg-12-3-1" => "wave-underlined",
+    "plantuml-lrg-12-3-2" => "turtle-doves",
+    "plantuml-lrg-12-6" => "french-hens",
+    "plantuml-lrg-16-1-1" => "T5 (2 weeks)",
+    "plantuml-lrg-17-2" => "another first level node",
+    "plantuml-lrg-17-3" => "KDE Neon",
+    "plantuml-lrg-17-4" => "Class Templates",
+    "plantuml-lrg-17-6-3" => "another second level node",
+    "plantuml-lrg-18-1" => "Identify Quick Wins",
+    "plantuml-lrg-18-7" => "Chihuahua",
+    "plantuml-lrg-4-2" => "Object08",
+    "plantuml-lrg-4-6-3" => "Charlie",
+    "plantuml-lrg-4-6-5" => "Germany",
+    "plantuml-lrg-4-7" => "Kick.Off",
+    "plantuml-lrg-4-8" => "Green"
   }.freeze
 
-  object = "object diagram (object/map), not a Sirena PlantUML family"
-  other = "PlantUML language Sirena does not implement"
   not_applicable = {
     "plantuml-lrg-1-12-invalid" => "deliberately missing @enduml: the " \
                                    "contract is the abort-to-listing",
@@ -73,24 +92,7 @@ RSpec.describe Metanorma::Plugin::Sirena::PlantumlBlockProcessor,
                    "diagram; rendered through its includers",
     "plantuml-lrg-27-3" => "!include <awslib/...> needs PlantUML's " \
                            "bundled standard library",
-    "plantuml-lrg-5-7" => "<img:file> embeds an external raster image",
-    "plantuml-lrg-11-1" => "#{other} (json)",
-    "plantuml-lrg-11-2" => "#{other} (json)",
-    "plantuml-lrg-11-3" => "#{other} (json)",
-    "plantuml-lrg-2-18" => "json element mixed into a use case diagram",
-    "plantuml-lrg-12-3-1" => "#{other} (yaml)",
-    "plantuml-lrg-12-3-2" => "#{other} (yaml)",
-    "plantuml-lrg-12-6" => "#{other} (yaml)",
-    "plantuml-lrg-16-1-1" => "#{other} (gantt)",
-    "plantuml-lrg-17-2" => "#{other} (mindmap)",
-    "plantuml-lrg-17-3" => "#{other} (mindmap)",
-    "plantuml-lrg-17-4" => "#{other} (mindmap)",
-    "plantuml-lrg-17-6-3" => "#{other} (mindmap)",
-    "plantuml-lrg-18-1" => "#{other} (wbs)",
-    "plantuml-lrg-18-7" => "#{other} (wbs)",
-    "plantuml-lrg-4-2" => object, "plantuml-lrg-4-6-3" => object,
-    "plantuml-lrg-4-6-5" => object, "plantuml-lrg-4-7" => object,
-    "plantuml-lrg-4-8" => object,
+    "plantuml-lrg-5-7" => "<img:file> embeds an external raster image"
   }.freeze
 
   let(:dir) { Dir.mktmpdir("plantuml-corpus") }
