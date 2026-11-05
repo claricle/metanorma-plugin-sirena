@@ -20,6 +20,16 @@ Scaffold. The `sirena` block processor is registered; the `[plantuml]` drop-in h
 ....
 ----
 
+== Activating in `metanorma compile`
+
+Metanorma does not discover this plugin on its own. Without it, `[plantuml]`
+blocks are rendered by the stock PlantUML plugin (Java). Load it explicitly:
+
+[source,sh]
+----
+bundle exec metanorma compile -r metanorma-plugin-sirena -t <flavour> doc.adoc
+----
+
 == License
 
 BSD-2-Clause.
