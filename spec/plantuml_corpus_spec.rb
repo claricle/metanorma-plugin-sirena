@@ -51,7 +51,17 @@ RSpec.describe Metanorma::Plugin::Sirena::PlantumlBlockProcessor,
     "plantuml-lrg-3-13" => "ArrayList",
     "plantuml-lrg-3-35-4" => "[blue,plain,16]",
     "plantuml-lrg-9-3-1" => "NewValuePreview",
-    "plantuml-lrg-9-5" => "Accumulate Enough Data"
+    "plantuml-lrg-9-5" => "Accumulate Enough Data",
+    # Families Sirena renders since the pinned revision (see Gemfile).
+    "plantuml-lrg-15-2" => "VPN Server",
+    "plantuml-lrg-6-25-2" => "test of color",
+    "plantuml-custom-filename" => "My_Number",
+    "plantuml-lrg-13-1-2" => "210.x.x.x/24",
+    "plantuml-lrg-13-4-1" => "192.168.10.0/24",
+    "plantuml-lrg-10-1-2" => "Clock_0",
+    "plantuml-lrg-10-16" => "Web Browser",
+    "plantuml-lrg-10-7-2" => "Season",
+    "plantuml-lrg-20-3" => "card_id : number"
   }.freeze
 
   object = "object diagram (object/map), not a Sirena PlantUML family"
@@ -63,11 +73,7 @@ RSpec.describe Metanorma::Plugin::Sirena::PlantumlBlockProcessor,
                    "diagram; rendered through its includers",
     "plantuml-lrg-27-3" => "!include <awslib/...> needs PlantUML's " \
                            "bundled standard library",
-    "plantuml-lrg-15-2" => "archimate elements and sprite macros",
     "plantuml-lrg-5-7" => "<img:file> embeds an external raster image",
-    "plantuml-lrg-6-25-2" => "activity <style> sheet (diamond, arrow, " \
-                             "partition, note selectors)",
-    "plantuml-custom-filename" => "#{other} (ebnf)",
     "plantuml-lrg-11-1" => "#{other} (json)",
     "plantuml-lrg-11-2" => "#{other} (json)",
     "plantuml-lrg-11-3" => "#{other} (json)",
@@ -75,11 +81,6 @@ RSpec.describe Metanorma::Plugin::Sirena::PlantumlBlockProcessor,
     "plantuml-lrg-12-3-1" => "#{other} (yaml)",
     "plantuml-lrg-12-3-2" => "#{other} (yaml)",
     "plantuml-lrg-12-6" => "#{other} (yaml)",
-    "plantuml-lrg-13-1-2" => "#{other} (nwdiag)",
-    "plantuml-lrg-13-4-1" => "#{other} (nwdiag)",
-    "plantuml-lrg-10-1-2" => "#{other} (timing)",
-    "plantuml-lrg-10-16" => "#{other} (timing)",
-    "plantuml-lrg-10-7-2" => "#{other} (timing)",
     "plantuml-lrg-16-1-1" => "#{other} (gantt)",
     "plantuml-lrg-17-2" => "#{other} (mindmap)",
     "plantuml-lrg-17-3" => "#{other} (mindmap)",
@@ -90,7 +91,6 @@ RSpec.describe Metanorma::Plugin::Sirena::PlantumlBlockProcessor,
     "plantuml-lrg-4-2" => object, "plantuml-lrg-4-6-3" => object,
     "plantuml-lrg-4-6-5" => object, "plantuml-lrg-4-7" => object,
     "plantuml-lrg-4-8" => object,
-    "plantuml-lrg-20-3" => "entity-relationship (entity) diagram"
   }.freeze
 
   let(:dir) { Dir.mktmpdir("plantuml-corpus") }
