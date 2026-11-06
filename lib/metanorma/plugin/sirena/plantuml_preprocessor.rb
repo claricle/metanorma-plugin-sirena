@@ -16,13 +16,16 @@ module Metanorma
       # refused by name.
       class PlantumlPreprocessor
         MAX_DEPTH = 10
+        # Include trees multiply (ten files of ten includes each, ten deep,
+        # is 10^10 lines), so the expanded diagram is bounded.
+        MAX_LINES = 50_000
         INCLUDE = /\A!(include(?:_many|_once|sub)?)[ \t]+(.+?)[ \t]*\z/i
         START_BLOCK = /\A@start\w+(?:\((?:.*?\bid=)?([^)=]*?)\))?/i
         END_BLOCK = /\A@end\w+/i
         STARTSUB = /\A!startsub[ \t]+(\w+)[ \t]*\z/i
         ENDSUB = /\A!endsub\b/i
         private_constant :MAX_DEPTH, :INCLUDE, :START_BLOCK, :END_BLOCK,
-                         :STARTSUB, :ENDSUB
+                         :STARTSUB, :ENDSUB, :MAX_LINES
 
         # @param dirs [Array<String>] absolute directories searched, in order
         def initialize(dirs)
@@ -33,6 +36,8 @@ module Metanorma
         # @return [String] the diagram with every include expanded and the
         #   `!startsub`/`!endsub` markers removed
         def expand(source)
+          @once = []
+          @emitted = 0
           expand_lines(source.lines.map(&:chomp), 0).join("\n")
         end
 
@@ -46,22 +51,42 @@ module Metanorma
             elsif STARTSUB.match?(text) || ENDSUB.match?(text)
               []
             else
-              [line]
+              emit(line)
             end
           end
+        end
+
+        def emit(line)
+          @emitted += 1
+          raise "PlantUML !include expands to more than #{MAX_LINES} lines" if @emitted > MAX_LINES
+
+          [line]
         end
 
         def included(directive, target, depth)
           raise "PlantUML !include nesting is deeper than #{MAX_DEPTH}" if depth >= MAX_DEPTH
 
           path, selector = split_target(target)
-          lines = ::File.read(resolve(path)).lines.map(&:chomp)
+          file = resolve(path)
+          return [] if directive == "include_once" && !first_include?(file, selector)
+
+          lines = ::File.read(file).lines.map(&:chomp)
           body = if directive == "includesub"
                    sub_lines(lines, selector, target)
                  else
                    block_lines(lines, selector, target)
                  end
           expand_lines(body, depth + 1)
+        end
+
+        # `!include_once` skips a file (with its selector) already pulled in
+        # by an earlier `!include_once`.
+        def first_include?(file, selector)
+          key = [file, selector]
+          return false if @once.include?(key)
+
+          @once << key
+          true
         end
 
         def split_target(target)

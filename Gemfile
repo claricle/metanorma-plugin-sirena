@@ -6,7 +6,7 @@ gemspec
 # revision (not the moving branch) so CI is deterministic; the not-applicable
 # table in spec/plantuml_corpus_spec.rb matches this revision. Bump both together.
 gem "sirena", git: "https://github.com/claricle/sirena",
-              ref: "2416f5e56bfe7a6e5a694abda046040274af2727"
+              ref: "abe9410491192bad397aa2af6a7a11085bd28817"
 
 # The flavour smoke spec (spec/plantuml_flavor_standoc_spec.rb) converts through a
 # real Metanorma flavour; it skips when the gem is absent.

@@ -94,6 +94,42 @@ RSpec.describe Metanorma::Plugin::Sirena::PlantumlBlockProcessor do
     end
   end
 
+  describe "output names (Sirena's diagram name)" do
+    def svgs
+      Dir[File.join(images, "*.svg")].map { |f| File.basename(f) }.sort
+    end
+
+    it "uses the (id=NAME) form of the opener" do
+      convert("@startuml(id=my_id)\nAlice -> Bob: hi\n@enduml")
+      expect(svgs).to eq(["my_id.svg"])
+    end
+
+    it "finds the name after leading comment lines" do
+      convert("' note\n@startuml spaced name\nAlice -> Bob: hi\n@enduml")
+      expect(svgs).to eq(["spaced_name.svg"])
+    end
+
+    it "keeps a hostile name inside the images directory" do
+      convert("@startuml ../../evil/x\nAlice -> Bob: hi\n@enduml")
+      expect(svgs.size).to eq(1)
+      expect(svgs.first).not_to include("/")
+      expect(Dir[File.join(dir, "**", "*.svg")].map { |f| File.dirname(f) }.uniq)
+        .to eq([images])
+    end
+
+    it "falls back to a timestamp when the name sanitises to nothing" do
+      convert("@startuml ///\nAlice -> Bob: hi\n@enduml")
+      expect(svgs.first).to match(/\Aplantuml_\d+_\d+_\d+\.svg\z/)
+    end
+
+    it "gives two blocks with one name two files" do
+      two = [plantuml_block(fixture("named.puml")),
+             plantuml_block(fixture("named.puml"))].join("\n")
+      convert_adoc(two, attributes)
+      expect(svgs).to eq(%w[my_diagram.svg my_diagram_2.svg])
+    end
+  end
+
   describe "graceful abort" do
     it "falls back to a plantuml listing when processing is disabled" do
       html = nil
@@ -123,6 +159,16 @@ RSpec.describe Metanorma::Plugin::Sirena::PlantumlBlockProcessor do
         .to output(/SVG only/).to_stderr
       expect(html).to include("@startsalt")
       expect(Dir.glob(File.join(images, "*"))).to be_empty
+    end
+
+    it "renders the SVG of a mixed formats list and warns about the rest" do
+      html = nil
+      expect do
+        html = convert(fixture("simple.puml"), 'plantuml,formats="svg,png"')
+      end.to output(/SVG only.*png/m).to_stderr
+      expect(html).to include("<img")
+      expect(Dir.glob(File.join(images, "*.svg")).size).to eq(1)
+      expect(Dir.glob(File.join(images, "*.png"))).to be_empty
     end
   end
 end
