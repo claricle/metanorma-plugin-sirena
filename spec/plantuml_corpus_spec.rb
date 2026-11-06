@@ -45,9 +45,9 @@ RSpec.describe Metanorma::Plugin::Sirena::PlantumlBlockProcessor,
     "plantuml-lrg-6-5" => "condition?",
     # Class and state diagrams, rendered by Sirena's PlantUML class and
     # state families (sirena#353).
-    "plantuml-lrg-3-8" => "+getName()",
+    "plantuml-lrg-3-8" => "getName()",
     "plantuml-lrg-3-10" => "On last defined class",
-    "plantuml-lrg-3-11-3" => "+void start(int timeoutms)",
+    "plantuml-lrg-3-11-3" => "void start(int timeoutms)",
     "plantuml-lrg-3-13" => "ArrayList",
     "plantuml-lrg-3-35-4" => "[blue,plain,16]",
     "plantuml-lrg-9-3-1" => "NewValuePreview",
