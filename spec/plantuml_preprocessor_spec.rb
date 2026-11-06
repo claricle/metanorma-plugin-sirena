@@ -68,4 +68,23 @@ RSpec.describe Metanorma::Plugin::Sirena::PlantumlPreprocessor do
     expect { pre.expand(wrap("!include loop.puml")) }
       .to raise_error(/deeper than/)
   end
+
+  it "includes an !include_once file only once" do
+    write("m.iuml", "A -> B : hi")
+
+    expect(pre.expand(wrap("!include_once m.iuml", "!include_once m.iuml")))
+      .to eq(wrap("A -> B : hi"))
+    expect(pre.expand(wrap("!include m.iuml", "!include_once m.iuml")))
+      .to eq(wrap("A -> B : hi", "A -> B : hi"))
+  end
+
+  it "refuses an include tree that expands past the line budget" do
+    write("l0.iuml", "A -> B")
+    (1..6).each do |i|
+      write("l#{i}.iuml", Array.new(10) { "!include l#{i - 1}.iuml" }.join("\n"))
+    end
+
+    expect { pre.expand(wrap("!include l6.iuml")) }
+      .to raise_error(/expands to more than \d+ lines/)
+  end
 end

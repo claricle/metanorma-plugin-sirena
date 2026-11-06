@@ -13,6 +13,7 @@ module ConvertHelper
   def plantuml_registry
     Asciidoctor::Extensions.create do
       block Metanorma::Plugin::Sirena::PlantumlBlockProcessor
+      block_macro Metanorma::Plugin::Sirena::PlantumlImageMacroProcessor
     end
   end
 

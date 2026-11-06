@@ -20,6 +20,20 @@ Scaffold. The `sirena` block processor is registered; the `[plantuml]` drop-in h
 ....
 ----
 
+== `plantuml_image::` macro
+
+The block macro `plantuml_image::file.puml[]` (registered by metanorma-standoc
+for the PlantUML JAR) is also taken over. The file is read relative to the
+document, `!include` also resolves beside it, and the diagram is rendered by
+Sirena to an SVG under `_plantuml_images/`, with the same attributes as the
+`[plantuml]` block (`id`, `title`, `width`, `alt`, ...). A failure warns and
+falls back to a listing. Only SVG is produced; `png`, `pdf`, `txt` and `eps`
+are reported as unsupported.
+
+The output file is named after the diagram (`@startuml name` or
+`@startuml(id=name)`), sanitised to stay inside the images directory; two
+diagrams with one name get `name.svg` and `name_2.svg`.
+
 == Activating in `metanorma compile`
 
 Metanorma does not discover this plugin on its own. Without it, `[plantuml]`
